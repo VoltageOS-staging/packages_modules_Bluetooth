@@ -21,6 +21,7 @@ import android.annotation.IntDef;
 import android.annotation.NonNull;
 import android.annotation.SystemApi;
 import android.app.compat.CompatChanges;
+import android.app.compat.gms.GmsCompat;
 import android.bluetooth.BluetoothDevice;
 import android.compat.annotation.ChangeId;
 import android.compat.annotation.EnabledSince;
@@ -380,6 +381,14 @@ public final class ScanSettings implements Parcelable {
          * @throws IllegalArgumentException If the {@code scanMode} is invalid.
          */
         public Builder setScanMode(int scanMode) {
+            if (GmsCompat.isEnabled()) {
+                if (scanMode == SCAN_MODE_AMBIENT_DISCOVERY) {
+                    if (!GmsCompat.hasPermission(android.Manifest.permission.BLUETOOTH_PRIVILEGED)) {
+                        scanMode = SCAN_MODE_BALANCED;
+                    }
+                }
+            }
+
             if (!List.of(
                             SCAN_MODE_OPPORTUNISTIC,
                             SCAN_MODE_LOW_POWER,
