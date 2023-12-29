@@ -556,7 +556,13 @@ public class HeadsetService extends ProfileService {
                 return false;
             }
 
-            service.enforceCallingOrSelfPermission(MODIFY_PHONE_STATE, null);
+            try {
+                service.enforceCallingOrSelfPermission(MODIFY_PHONE_STATE, null);
+            } catch (SecurityException e) {
+                /* see android.bluetooth.BluetoothHeadset#connect */
+                Utils.enforceBluetoothPrivilegedAndroidAutoOrThrow(service, e);
+            }
+
             return service.connect(device);
         }
 
@@ -609,8 +615,14 @@ public class HeadsetService extends ProfileService {
                 return false;
             }
 
-            service.enforceCallingOrSelfPermission(MODIFY_PHONE_STATE, null);
-            service.enforceCallingOrSelfPermission(BLUETOOTH_PRIVILEGED, null);
+            try {
+                service.enforceCallingOrSelfPermission(MODIFY_PHONE_STATE, null);
+                service.enforceCallingOrSelfPermission(BLUETOOTH_PRIVILEGED, null);
+            } catch (SecurityException e) {
+                /* see android.bluetooth.BluetoothHeadset#setConnectionPolicy */
+                Utils.enforceBluetoothPrivilegedAndroidAutoOrThrow(service, e);
+            }
+
             return service.setConnectionPolicy(device, connectionPolicy);
         }
 
