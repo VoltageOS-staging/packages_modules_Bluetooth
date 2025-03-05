@@ -360,6 +360,7 @@ class BluetoothServiceBinder extends IBluetoothManager.Stub {
         mBluetoothManagerService.dump(fd, writer, args);
     }
 
+    @android.annotation.SuppressLint("AndroidFrameworkRequiresPermission")
     private boolean isPrivilegedAndroidAuto(int pid, int uid) {
         String perm = android.Manifest.permission.BLUETOOTH_PRIVILEGED_ANDROID_AUTO;
         return mContext.checkPermission(perm, pid, uid) == PackageManager.PERMISSION_GRANTED;
